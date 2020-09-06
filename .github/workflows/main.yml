@@ -51,4 +51,5 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./docker/speedtest
           file: ./docker/speedtest/Dockerfile
+          push: true
           tags: ${{ steps.prep.outputs.tags }}
