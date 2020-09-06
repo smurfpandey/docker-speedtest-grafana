@@ -6,15 +6,12 @@ RUN echo "deb https://ookla.bintray.com/debian $(lsb_release -sc) main" | tee  /
 RUN apt-get update
 RUN apt-get install speedtest
 
-FROM alpine as install-dependencies
-RUN apk add --no-cache npm
+FROM node:12.18.3-buster as install-dependencies
 WORKDIR /build
 COPY . .
 RUN npm ci
 
-FROM alpine as prod-stage
-RUN apk add --no-cache nodejs
-LABEL maintainer="Jonas Friedmann <j@frd.mn>"
+FROM arm32v7/node:12.18.3-buster as prod-stage
 
 WORKDIR /usr/src/app
 

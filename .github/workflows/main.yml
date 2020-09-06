@@ -28,7 +28,7 @@ jobs:
         with:
           username: smurfpandey
           password: "${{ secrets.GITHUB_TOKEN }}"
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           image_name: docker-speedtest
           context: "./docker/speedtest"
 
