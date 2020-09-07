@@ -1,4 +1,4 @@
-FROM debian:10-slim AS get-speedtest
+FROM arm32v7/debian:10-slim AS get-speedtest
 
 RUN apt-get update && apt-get install gnupg1 apt-transport-https dirmngr lsb-release -y
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 379CE192D401AB61
