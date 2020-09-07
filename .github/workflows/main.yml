@@ -15,7 +15,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=ghcr.io/smurfpandey/speedtest
+          VERSION=edge
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            TAGS="$TAGS,${DOCKER_IMAGE}:latest"
+          fi
+          echo ::set-output name=tags::${TAGS}
+      
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@master
@@ -27,7 +40,6 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-            
       - name: Login to ghcr
         uses: docker/login-action@v1
         with:
@@ -42,5 +54,5 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           context: ./docker/speedtest
           file: ./docker/speedtest/Dockerfile
-          push: true          
-          tag_with_sha: true
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
