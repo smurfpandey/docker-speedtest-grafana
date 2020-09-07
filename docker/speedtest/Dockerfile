@@ -17,8 +17,7 @@ WORKDIR /usr/src/app
 
 ENV INFLUXDB_DB="speedtest" \
     INFLUXDB_HOST="influxdb" \
-    SPEEDTEST_HOST="local" \
-    SPEEDTEST_INTERVAL=3600
+    SPEEDTEST_HOST="local"
 
 CMD [ "node", "index.js" ]
 

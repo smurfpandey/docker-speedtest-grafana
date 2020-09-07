@@ -39,17 +39,12 @@ const pushToInflux = async (influx, metrics) => {
       database: process.env.INFLUXDB_DB
     });
 
-    while (true) {
-      log("Starting speedtest...");
-      const speedMetrics = await getSpeedMetrics();
-      log(
-        `Speedtest results - Download: ${speedMetrics.download}, Upload: ${speedMetrics.upload}, Ping: ${speedMetrics.ping}`
-      );
-      await pushToInflux(influx, speedMetrics);
-
-      log(`Sleeping for ${process.env.SPEEDTEST_INTERVAL} seconds...`);
-      await delay(process.env.SPEEDTEST_INTERVAL * 1000);
-    }
+    log("Starting speedtest...");
+    const speedMetrics = await getSpeedMetrics();
+    log(
+      `Speedtest results - Download: ${speedMetrics.download}, Upload: ${speedMetrics.upload}, Ping: ${speedMetrics.ping}`
+    );
+    await pushToInflux(influx, speedMetrics);
   } catch (err) {
     console.error(err.message);
     process.exit(1);
