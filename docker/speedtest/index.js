@@ -18,7 +18,8 @@ const getSpeedMetrics = async () => {
   return {
     upload: bitToMbps(result.upload.bandwidth),
     download: bitToMbps(result.download.bandwidth),
-    ping: result.ping.latency
+    ping: result.ping.latency,
+    jitter: result.ping.jitter
   };
 };
 
@@ -36,17 +37,19 @@ const pushToInflux = async (influx, metrics) => {
   try {
     const influx = new Influx.InfluxDB({
       host: process.env.INFLUXDB_HOST,
-      database: process.env.INFLUXDB_DB
+      protocol: process.env.INFLUXDB_PROTOCOL,
+      port: process.env.INFLUXDB_PORT,
+      database: process.env.INFLUXDB_DB      
     });
 
     log("Starting speedtest...");
     const speedMetrics = await getSpeedMetrics();
     log(
-      `Speedtest results - Download: ${speedMetrics.download}, Upload: ${speedMetrics.upload}, Ping: ${speedMetrics.ping}`
+      `Speedtest results - Download: ${speedMetrics.download}, Upload: ${speedMetrics.upload}, Ping: ${speedMetrics.ping}, Jitter: ${speedMetrics.jitter}`
     );
     await pushToInflux(influx, speedMetrics);
   } catch (err) {
-    console.error(err.message);
+    console.error(err);
     process.exit(1);
   }
 })();
